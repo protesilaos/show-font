@@ -181,23 +181,21 @@ matched against the output of the `fc-scan' executable."
 
 (defun show-font--prepare-text ()
   "Prepare pangram text at varying font heights."
-  (let* ((pangram (show-font--get-pangram))
-         (faces '(show-font-small show-font-regular show-font-medium show-font-large))
-         (list-of-lines nil)
-         (list-of-blocks nil)
-         (name-string (show-font--get-attribute "fullname"))
-         (family-string (show-font--get-attribute "family"))
-         (name (propertize name-string 'face (list 'show-font-title :family family-string)))
-         (family (propertize family-string 'face (list 'show-font-subtitle :family family-string))))
+  (let ((pangram (show-font--get-pangram))
+        (faces '(show-font-small show-font-regular show-font-medium show-font-large))
+        (list-of-lines nil)
+        (list-of-blocks nil)
+        (name (show-font--get-attribute "fullname"))
+        (family (show-font--get-attribute "family")))
     (dolist (face faces)
       (push (propertize pangram 'face (list face :family family)) list-of-lines)
       (push (propertize show-font-character-sample 'face (list face :family family)) list-of-blocks))
     (concat
-     name "\n"
-     (make-string (length name) ?-) "\n"
-     "Rendered with parent family:" "\n"
-     family "\n"
-     (make-string (length family) ?=) "\n\n"
+     (propertize name 'face (list 'show-font-title :family family)) "\n"
+     (propertize (make-string (length name) ?-) 'face (list 'show-font-title :family family)) "\n"
+     (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family)) "\n"
+     (propertize family 'face (list 'show-font-subtitle :family family)) "\n"
+     (propertize (make-string (length family) ?=) 'face (list 'show-font-subtitle :family family)) "\n\n"
      (mapconcat #'identity (nreverse list-of-lines) "\n") "\n"
      (mapconcat #'identity (nreverse list-of-blocks) "\n") "\n")))
 
