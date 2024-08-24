@@ -1,0 +1,5 @@
+*.elc
+*-autoloads.el
+*-pkg.el
+show-font.info
+show-font.texi
