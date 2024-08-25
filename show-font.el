@@ -227,6 +227,9 @@ buffer."
   (setq-local auto-save-default nil)
   (show-font--add-text))
 
+;; FIXME 2024-08-25: Do we want to autoload this or does it belong
+;; somewhere else?  It seems wrong like this.
+
 ;;;###autoload
 (add-to-list 'file-name-handler-alist (cons show-font-extensions-regexp #'show-font-handler))
 
