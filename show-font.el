@@ -97,6 +97,7 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
   "Face for font preview title."
   :group 'show-font-faces)
 
+;;;###autoload
 (defconst show-font-extensions-regexp "\\.\\(ttf\\|otf\\)\\'"
   "Regular expression to match font file extensions.")
 
