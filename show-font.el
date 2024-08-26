@@ -154,15 +154,14 @@ ATTRIBUTE is a string, such as \"family\" or \"fullname\", which is
 matched against the output of the `fc-scan' executable."
   (unless (executable-find "fc-scan")
     (error "Cannot find `fc-scan' executable; will not render font"))
-  (let ((f (or file buffer-file-name)))
-    (when-let ((_ f)
-               (_ (string-match-p show-font-extensions-regexp f))
-               (output (shell-command-to-string (format "fc-scan %s" f)))
-               (match (string-match (format "%s: \"\\(.*\\)\"" attribute) output))
-               (found (match-string 1 output)))
-      (if (string-match-p "\"(s)" found)
-          (car (split-string found "\"(s)" :omit-nulls))
-        found))))
+  (when-let ((f (or file buffer-file-name))
+             (_ (string-match-p show-font-extensions-regexp f))
+             (output (shell-command-to-string (format "fc-scan %s" f)))
+             (match (string-match (format "%s: \"\\(.*\\)\"" attribute) output))
+             (found (match-string 1 output)))
+    (if (string-match-p "\"(s)" found)
+        (car (split-string found "\"(s)" :omit-nulls))
+      found)))
 
 (defun show-font--get-pangram ()
   "Return `show-font-pangram' or fallback string."
