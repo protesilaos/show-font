@@ -35,6 +35,7 @@
 ;; TODO 2024-08-24: How to find out if a font is available on the system?
 ;; TODO 2024-08-24: Produce informative message if font cannot be displayed.
 ;; TODO 2024-08-24: Offer option to install missing font.
+;; TODO 2024-08-27: Make this package work with other operating systems.
 
 (eval-when-compile (require 'cl-lib))
 
