@@ -220,11 +220,11 @@ buffer."
 (define-derived-mode show-font-mode special-mode "Show Font"
   "Major mode to preview a font file's character set."
   (set-buffer-multibyte t)
-  (setq buffer-read-only t)
+  (setq-local truncate-lines t
+              buffer-undo-list t
+              auto-save-default nil
+              buffer-read-only t)
   (visual-line-mode -1)
-  (setq truncate-lines t)
-  (setq buffer-undo-list t)
-  (setq-local auto-save-default nil)
   (show-font--add-text))
 
 ;; FIXME 2024-08-25: Do we want to autoload this or does it belong
