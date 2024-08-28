@@ -160,6 +160,20 @@ matched against the output of the `fc-scan' executable."
              (output (shell-command-to-string (format "fc-scan -f \"%%{%s}\" %s" attribute f))))
     output))
 
+(defun show-font--get-installed-fonts (&optional attribute)
+  "Get list of font families available on the system.
+With optional ATTRIBUTE use it instead of \"family\"."
+  (unless (executable-find "fc-list")
+    (error "Cannot find `fc-list' executable; will not find installed fonts"))
+  (process-lines
+   "fc-list"
+   "-f"
+   (format "%%{%s}\n" (or attribute "file"))))
+
+(defun show-font--installed-p (file)
+  "Return non-nil if font FILE is installed on the system."
+  (member file (show-font--get-installed-fonts)))
+
 (defun show-font--get-pangram ()
   "Return `show-font-pangram' or fallback string."
   (cond
