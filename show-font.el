@@ -157,12 +157,8 @@ matched against the output of the `fc-scan' executable."
     (error "Cannot find `fc-scan' executable; will not render font"))
   (when-let ((f (or file buffer-file-name))
              (_ (string-match-p show-font-extensions-regexp f))
-             (output (shell-command-to-string (format "fc-scan %s" f)))
-             (match (string-match (format "%s: \"\\(.*\\)\"" attribute) output))
-             (found (match-string 1 output)))
-    (if (string-match-p "\"(s)" found)
-        (car (split-string found "\"(s)" :omit-nulls))
-      found)))
+             (output (shell-command-to-string (format "fc-scan -f \"%%{%s}\" %s" attribute f))))
+    output))
 
 (defun show-font--get-pangram ()
   "Return `show-font-pangram' or fallback string."
