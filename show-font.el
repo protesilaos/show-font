@@ -158,7 +158,9 @@ matched against the output of the `fc-scan' executable."
   (when-let ((f (or file buffer-file-name))
              (_ (string-match-p show-font-extensions-regexp f))
              (output (shell-command-to-string (format "fc-scan -f \"%%{%s}\" %s" attribute f))))
-    output))
+    (if (string-match-p "," output)
+        (car (split-string output ","))
+      output)))
 
 (defun show-font--get-installed-fonts (&optional attribute)
   "Get list of font families available on the system.
