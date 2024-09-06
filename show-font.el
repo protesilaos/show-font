@@ -124,29 +124,19 @@ that all of them occur at least once in STRING."
       (message "Still missing: %s" (mapconcat #'identity missing-characters ", "))
       nil)))
 
-;; NOTE 2024-08-24: Copied from `ready-player.el' by Alvaro Ramirez to
-;; quickly put this package together.  I do not quite understand the
-;; mechanics of file handling yet.  The idea of what I want is to get
-;; an empty buffer.  Then I add contents there without making it
-;; appear modified.
 (defun show-font-handler (operation &rest args)
   "Handle the given I/O `file-name-handler-alist' OPERATION with ARGS.
 Determine how to render the font file contents in a buffer."
-  (pcase operation
-    ('insert-file-contents
-     (cl-destructuring-bind (filename visit _beg _end _replace) args
-       (when visit
-         (setq buffer-file-name filename))
-       (list buffer-file-name (point-max))))
-    ('file-attributes
-     (let* ((file-name-handler-alist nil)
-	        (attributes (apply #'file-name-non-special
-                               (append (list operation) args))))
-       ;; 7 is file size location
-       ;; as per `file-attributes'.
-       (setf (nth 7 attributes) 0)
-       attributes))
-    (_ (let ((inhibit-file-name-handlers
+  (cond
+   ((eq operation 'insert-file-contents)
+    (when-let ((filename (car args))
+               (visit (cadr args)))
+         (setq buffer-file-name filename)
+         (list buffer-file-name (point-max)))
+     (show-font--add-text))
+    ;; Handle any operation we do not know about.  This is copied from
+    ;; the example show in (info "(elisp) Magic File Names").
+    (t (let ((inhibit-file-name-handlers
               (cons #'show-font-handler
                     (and (eq inhibit-file-name-operation operation)
                          inhibit-file-name-handlers)))
