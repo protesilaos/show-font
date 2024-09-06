@@ -326,7 +326,10 @@ FAMILY is a string that satisfies `show-font-installed-p'."
   (when (show-font-installed-p family)
     (show-font-with-preview-buffer (format "*show-font preview of `%s'*" family)
       (save-excursion
-        (insert (show-font--prepare-text family))))))
+        (insert (show-font--prepare-text family)))
+      (setq-local revert-buffer-function
+                  (lambda (_ignore-auto _noconfirm)
+                    (show-font-select-preview family))))))
 
 ;;;; Preview fonts in a list
 
