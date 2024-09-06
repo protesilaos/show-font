@@ -171,10 +171,11 @@ Determine how to render the font file contents in a buffer."
              (inhibit-file-name-operation operation))
          (apply operation args)))))
 
-(defun show-font--get-attribute (attribute &optional file)
+(defun show-font--get-attribute-from-file (attribute &optional file)
   "Get font family ATTRIBUTE from the current file or given FILE.
 ATTRIBUTE is a string, such as \"family\" or \"fullname\", which is
 matched against the output of the `fc-scan' executable."
+  ;; TODO 2024-09-06: Make this work with other font backends.
   (unless (executable-find "fc-scan")
     (error "Cannot find `fc-scan' executable; will not render font"))
   (when-let ((f (or file buffer-file-name))
@@ -293,8 +294,8 @@ instead of that of the file."
           (list-of-lines nil)
           (list-of-blocks nil)
           (pangram (show-font--get-pangram))
-          (name (or family (show-font--get-attribute "fullname")))
-          (family (or family (show-font--get-attribute "family"))))
+          (name (or family (show-font--get-attribute-from-file "fullname")))
+          (family (or family (show-font--get-attribute-from-file "family"))))
       (dolist (face faces)
         (push (propertize pangram 'face (list face :family family)) list-of-lines)
         (push (propertize show-font-character-sample 'face (list face :family family)) list-of-blocks))
