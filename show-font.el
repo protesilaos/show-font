@@ -391,6 +391,7 @@ FAMILY is a string that satisfies `show-font-installed-p'."
 
 ;;;; Preview fonts in a list
 
+;;;###autoload
 (defun show-font-list ()
   "Produce a list of installed fonts with their preview.
 The preview text is that of `show-font-pangram'."
