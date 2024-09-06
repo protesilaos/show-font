@@ -280,7 +280,6 @@ instead of that of the file."
               (make-separator-line))
            "")
          "\n"
-         ;; Why not use `make-separator-line' here?
          (mapconcat #'identity (nreverse list-of-lines) "\n") "\n"
          (mapconcat #'identity (nreverse list-of-blocks) "\n") "\n"))))))
 
