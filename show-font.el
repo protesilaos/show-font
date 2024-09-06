@@ -41,14 +41,21 @@
   "Show font features in a buffer WORK-IN-PROGRESS."
   :group 'font)
 
+(defconst show-font-pangrams
+  '((fox . "The quick brown fox jumps over the lazy dog")
+    (wizards . "Grumpy wizards make toxic brew for the evil queen and jack")
+    (gunboats . "A quick movement of the enemy will jeopardize six gunboats")
+    (prot . "Prot may find zesty owls join quiet vixens as the night beckons"))
+  "Default list of pangrams.")
+
 (defcustom show-font-pangram 'prot
   "Pangram to display previewed font in."
   :package-version '(show-font . "0.1.0")
-  :type '(choice
-          (const :tag "The quick brown fox jumps over the lazy dog" fox)
-          (const :tag "Grumpy wizards make toxic brew for the evil queen and jack" wizards)
-          (const :tag "A quick movement of the enemy will jeopardize six gunboats" gunboats)
-          (const :tag "Prot may find zesty owls join quiet vixens as the night beckons" prot)
+  :type `(choice
+          ,@(mapcar
+             (lambda (element)
+               (list 'const :tag (cdr element) (car element)))
+               show-font-pangrams)
           (string :tag "A custom pangram"))
   :group 'show-font)
 
