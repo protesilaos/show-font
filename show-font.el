@@ -49,7 +49,7 @@
           (const :tag "Grumpy wizards make toxic brew for the evil queen and jack" wizards)
           (const :tag "A quick movement of the enemy will jeopardize six gunboats" gunboats)
           (const :tag "Prot may find zesty owls join quiet vixens as the night beckons" prot)
-          string)
+          (string :tag "A custom pangram"))
   :group 'show-font)
 
 (defcustom show-font-character-sample
@@ -101,8 +101,7 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
   "Regular expression to match font file extensions.")
 
 (defconst show-font-latin-alphabet
-  '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m"
-    "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z")
+  (eval-when-compile (mapcar #'string (number-sequence ?a ?z)))
   "The latin alphabet as a list of strings.")
 
 (defun show-font-pangram-p (string &optional characters)
@@ -155,7 +154,9 @@ matched against the output of the `fc-scan' executable."
     (error "Cannot find `fc-scan' executable; will not render font"))
   (when-let ((f (or file buffer-file-name))
              (_ (string-match-p show-font-extensions-regexp f))
-             (output (shell-command-to-string (format "fc-scan -f \"%%{%s}\" %s" attribute f))))
+             (output (shell-command-to-string (format "fc-scan -f \"%%{%s}\" %s"
+                                                      (shell-quote-argument attribute)
+                                                      (shell-quote-argument f)))))
     (if (string-match-p "," output)
         (car (split-string output ","))
       output)))
@@ -214,25 +215,25 @@ With optional ATTRIBUTE use it instead of \"family\"."
           (push (propertize pangram 'face (list face :family family)) list-of-lines)
           (push (propertize show-font-character-sample 'face (list face :family family)) list-of-blocks))
         (concat
-         (propertize name 'face (list 'show-font-title :family family)) "\n"
-         (propertize (make-string (length name) ?-) 'face (list 'show-font-title :family family)) "\n"
-         (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family)) "\n"
-         (propertize family 'face (list 'show-font-subtitle :family family)) "\n"
-         (propertize (make-string (length family) ?=) 'face (list 'show-font-subtitle :family family)) "\n\n"
+         (propertize name 'face (list 'show-font-title :family family))
+         "\n"
+         (make-separator-line)
+         "\n"
+         (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family))
+         "\n"
+         (propertize family 'face (list 'show-font-subtitle :family family))
+         "\n"
+         (make-separator-line)
+         "\n"
+         ;; Why not use `make-separator-line' here?
          (mapconcat #'identity (nreverse list-of-lines) "\n") "\n"
          (mapconcat #'identity (nreverse list-of-blocks) "\n") "\n"))))))
-
-(defmacro show-font-with-unmodified-buffer (&rest body)
-  "Run BODY while not making the buffer appear modified."
-  `(progn
-     ,@body
-     (set-buffer-modified-p nil)))
 
 (defun show-font--add-text (&optional buffer)
   "Add the `show-font-pangram' as an overlay at `point-min'.
 With optional BUFFER, operate therein.  Otherwise, do it in the current
 buffer."
-  (show-font-with-unmodified-buffer
+  (with-silent-modifications
    (with-current-buffer (or buffer (current-buffer))
      (let ((inhibit-read-only t))
        (save-excursion
