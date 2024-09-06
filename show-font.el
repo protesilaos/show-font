@@ -284,6 +284,7 @@ buffer."
               buffer-undo-list t
               auto-save-default nil
               buffer-read-only t)
+  (display-line-numbers-mode -1)
   (visual-line-mode -1))
 
 ;; FIXME 2024-08-25: Do we want to autoload this or does it belong
