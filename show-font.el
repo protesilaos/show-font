@@ -182,6 +182,19 @@ With optional ATTRIBUTE use it instead of \"family\"."
   "Return non-nil if font FILE is installed on the system."
   (member file (show-font--get-installed-fonts)))
 
+;; TODO 2024-09-06: Maybe we can rewrite `show-font--get-pangram' in some smart way to do this:
+;;
+;; `(cond
+;;   ((stringp show-font-pangram)
+;;    show-font-pangram)
+;;   ,@(mapcar
+;;      (lambda (element)
+;;        (list `(eq show-font-pangram ',(car element)) (cdr element)))
+;;      show-font-pangrams)
+;;   (t
+;;    "No string or acceptable symbol value for `show-font-pangram', but this will do...")))
+;;
+;; Can it be done without all the magic of `pcase' and friends?
 (defun show-font--get-pangram ()
   "Return `show-font-pangram' or fallback string."
   (cond
