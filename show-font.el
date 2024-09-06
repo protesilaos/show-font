@@ -363,7 +363,8 @@ buffer."
 
 ;;;; Preview an installed font
 
-(defvar show-font-select-preview-history nil)
+(defvar show-font-select-preview-history nil
+  "Minibuffer history for `show-font-select-preview'.")
 
 (defun show-font--select-preview-prompt ()
   "Prompt for a font among `show-font--get-installed-font-families'."
