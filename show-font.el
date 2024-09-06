@@ -396,6 +396,9 @@ FAMILY is a string that satisfies `show-font-installed-p'."
 The preview text is that of `show-font-pangram'."
   (declare (interactive-only t))
   (interactive)
+  ;; FIXME 2024-09-06: Here we should only list fonts that can display
+  ;; the pangram OR, better, we should have something appropriate to
+  ;; show for them (e.g. emoji for the Emoji font).
   (show-font-with-preview-buffer "*show-font preview of all installed fonts*"
     (save-excursion
       (let* ((counter 0)
