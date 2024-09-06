@@ -127,6 +127,9 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
 (defface show-font-misc '((t :inherit shadow))
   "Face for other, less important, elements in a preview.")
 
+(defface show-font-button '((t :inherit button))
+  "Face for buttons, like to install a missing font.")
+
 ;;;; Helper functions
 
 (defconst show-font-latin-alphabet
@@ -262,60 +265,77 @@ FAMILY is a string like those of `show-font--get-installed-font-families'."
     (shell-command-to-string (format "fc-cache -f -v"))
     (message "Font installed; restart Emacs to notice the effect")))
 
-(defun show-font-install (file)
+(defun show-font-install (&optional file)
   "Install font FILE locally.
 FILE must be of type TTF or OTF and must not already be installed (per
 `show-font-installed-file-p')."
-  (if (string-match-p "\\.\\(ttf\\|otf\\)\\'" file)
-      (cond
-       ((show-font-installed-file-p file)
-        (user-error "`%s' is already installed; aborting" file))
-       (t
-        (show-font--install file)))
-    (user-error "`%s' is not a known font file (TTF or OTF); aborting" file)))
+  (let ((f (or file buffer-file-name)))
+    (if (string-match-p "\\.\\(ttf\\|otf\\)\\'" f)
+        (cond
+         ((show-font-installed-file-p f)
+          (user-error "`%s' is already installed; aborting" f))
+         (t
+          (show-font--install f)))
+      (user-error "`%s' is not a known font file (TTF or OTF); aborting" f))))
 
 (defun show-font--prepare-text (&optional family)
   "Prepare pangram text at varying font heights for the current font file.
 With optional FAMILY, prepare a preview for the given font family
 instead of that of the file."
-  (let* ((pangram (show-font--get-pangram))
-         (appeasement-message (concat "But here is a pangram to make you happy..." "\n\n" pangram)))
-    (cond
-     ((not (display-graphic-p))
-      (concat (propertize "Fonts cannot be displayed in a terminal or TTY." 'face 'show-font-title)
-              "\n\n" appeasement-message))
-     ((and (not family)
-           (not (show-font-installed-file-p buffer-file-name)))
-      (concat (propertize "Cannot preview this font" 'face 'show-font-title)
-              "\n\n"
-              (propertize buffer-file-name 'face 'bold)
-              " is not installed"
-              "\n\n" appeasement-message))
-     (t
-      (let ((faces '(show-font-small show-font-regular show-font-medium show-font-large))
-            (list-of-lines nil)
-            (list-of-blocks nil)
-            (name (or family (show-font--get-attribute "fullname")))
-            (family (or family (show-font--get-attribute "family"))))
-        (dolist (face faces)
-          (push (propertize pangram 'face (list face :family family)) list-of-lines)
-          (push (propertize show-font-character-sample 'face (list face :family family)) list-of-blocks))
-        (concat
-         (propertize name 'face (list 'show-font-title :family family))
-         "\n"
-         (make-separator-line)
-         (if (not (equal name family))
-             (concat
-              "\n"
-              (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family))
-              "\n"
-              (propertize family 'face (list 'show-font-title-small :family family))
-              "\n"
-              (make-separator-line))
-           "")
-         "\n"
-         (mapconcat #'identity (nreverse list-of-lines) "\n") "\n"
-         (mapconcat #'identity (nreverse list-of-blocks) "\n") "\n"))))))
+  (cond
+   ((not (display-graphic-p))
+    (propertize "Fonts cannot be displayed in a terminal or TTY." 'face 'show-font-title))
+   ((and (not family)
+         (not (show-font-installed-file-p buffer-file-name)))
+    nil)
+   (t
+    (let ((faces '(show-font-small show-font-regular show-font-medium show-font-large))
+          (list-of-lines nil)
+          (list-of-blocks nil)
+          (pangram (show-font--get-pangram))
+          (name (or family (show-font--get-attribute "fullname")))
+          (family (or family (show-font--get-attribute "family"))))
+      (dolist (face faces)
+        (push (propertize pangram 'face (list face :family family)) list-of-lines)
+        (push (propertize show-font-character-sample 'face (list face :family family)) list-of-blocks))
+      (concat
+       (propertize name 'face (list 'show-font-title :family family))
+       "\n"
+       (make-separator-line)
+       (if (not (equal name family))
+           (concat
+            "\n"
+            (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family))
+            "\n"
+            (propertize family 'face (list 'show-font-title-small :family family))
+            "\n"
+            (make-separator-line))
+         "")
+       "\n"
+       (mapconcat #'identity (nreverse list-of-lines) "\n") "\n"
+       (mapconcat #'identity (nreverse list-of-blocks) "\n") "\n")))))
+
+(defun show-font--install-file-button (_button)
+  "Wrapper for `show-font-install' to work as a button."
+  (show-font-install))
+
+(define-button-type 'show-font-installed-file-button
+  'follow-link nil
+  'action #'show-font--install-file-button
+  'face 'show-font-button)
+
+(defun show-font--insert-button ()
+  "Insert `show-font-installed-file-button' at point."
+  (insert
+   (concat (propertize "Cannot preview this font" 'face 'show-font-title)
+           "\n\n"
+           (propertize buffer-file-name 'face 'bold)
+           " is not installed"
+           "\n\n"
+           "Install this font file?"
+           "\n"))
+  (goto-char (point-max))
+  (make-text-button (line-beginning-position 0) (line-end-position 0) :type 'show-font-installed-file-button))
 
 (defun show-font--add-text (&optional buffer)
   "Add the `show-font-pangram' as an overlay at `point-min'.
@@ -325,7 +345,9 @@ buffer."
    (with-current-buffer (or buffer (current-buffer))
      (let ((inhibit-read-only t))
        (save-excursion
-         (insert (show-font--prepare-text)))))))
+         (if-let ((text (show-font--prepare-text)))
+             (insert text)
+           (show-font--insert-button)))))))
 
 (defmacro show-font-with-preview-buffer (name &rest body)
   "Evaluate BODY inside NAME buffer."
