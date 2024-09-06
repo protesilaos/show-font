@@ -79,6 +79,8 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
   :type 'string
   :group 'show-font)
 
+;;;; Faces
+
 (defgroup show-font-faces nil
   "Show font features in a buffer WORK-IN-PROGRESS."
   :group 'show-font)
@@ -123,6 +125,7 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
 ;;;###autoload
 (defconst show-font-extensions-regexp "\\.\\(ttf\\|otf\\)\\'"
   "Regular expression to match font file extensions.")
+;;;; Helper functions
 
 (defconst show-font-latin-alphabet
   (eval-when-compile (mapcar #'string (number-sequence ?a ?z)))
@@ -268,6 +271,8 @@ buffer."
      (let ((inhibit-read-only t))
        (save-excursion
          (insert (show-font--prepare-text)))))))
+
+;;;; Major mode to preview the font of the current TTF or OTF file
 
 ;;;###autoload
 (define-derived-mode show-font-mode special-mode "Show Font"
