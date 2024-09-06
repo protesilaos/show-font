@@ -32,8 +32,6 @@
 
 ;;; Code:
 
-;; TODO 2024-08-24: Offer option to install missing font.
-
 (eval-when-compile (require 'cl-lib))
 
 (defgroup show-font nil
@@ -239,6 +237,46 @@ FAMILY is a string like those of `show-font--get-installed-font-families'."
     "Prot may find zesty owls join quiet vixens as the night beckons")
    (t
     "No string or acceptable symbol value for `show-font-pangram', but this will do...")))
+
+(defun show-font--install-get-destination ()
+  "Return directory where fonts can be copied locally."
+  (cond
+   ((member system-type '(gnu gnu/linux))
+    (expand-file-name "~/.local/share/fonts/"))
+   ((eq system-type 'darwin)
+    (expand-file-name "~/Library/Fonts/"))
+   (t
+    (error "Unknown destination for Operating System of type `%s'" system-type))))
+
+(defun show-font--install-confirmation (destination)
+  "Prompt whether to copy the font to DESTINATION."
+  (y-or-n-p (format "Install font by copying it to `%s'?" destination)))
+
+(defun show-font--install (file)
+  "Install the font FILE."
+  (when-let ((destination (show-font--install-get-destination))
+             (_ (show-font--install-confirmation destination)))
+    (copy-file file destination 1) ; ask for confirmation to overwrite
+    (message "Copied `%s' to `%s'; now updating the font cache" file destination)
+    ;; TODO 2024-09-06: How to do the same on all operating systems?
+    (shell-command-to-string (format "fc-cache -f -v"))
+    (message "Font installed; restart Emacs to notice the effect")))
+
+(defun show-font-install (file)
+  "Install font FILE locally.
+When called interactively, FILE is the variable `buffer-file-name'.
+Otherwise, FILE is a string.
+
+FILE must be of type TTF or OTF and must not already be installed (per
+`show-font-installed-file-p')."
+  (interactive (list buffer-file-name))
+  (if (string-match-p "\\.\\(ttf\\|otf\\)\\'" file)
+      (cond
+       ((show-font-installed-file-p file)
+        (user-error "`%s' is already installed; aborting" file))
+       (t
+        (show-font--install file)))
+    (user-error "`%s' is not a known font file (TTF or OTF); aborting" file)))
 
 (defun show-font--prepare-text (&optional family)
   "Prepare pangram text at varying font heights for the current font file.
