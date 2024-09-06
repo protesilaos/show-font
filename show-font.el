@@ -114,7 +114,10 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
 (defun show-font-pangram-p (string &optional characters)
   "Return non-nil if STRING is a pangram.
 With optional CHARACTERS as a list of single character strings, test
-that all of them occur at least once in STRING."
+that all of them occur at least once in STRING.
+
+If there are characters missing from STRING, print them in a message and
+return nil."
   (let ((missing-characters nil))
     (dolist (character (or characters show-font-latin-alphabet))
       (unless (string-match-p character string)
