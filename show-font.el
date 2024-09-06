@@ -162,7 +162,7 @@ Determine how to render the font file contents in a buffer."
          (list buffer-file-name (point-max)))
      (show-font--add-text))
     ;; Handle any operation we do not know about.  This is copied from
-    ;; the example show in (info "(elisp) Magic File Names").
+    ;; the example shown in (info "(elisp) Magic File Names").
     (t (let ((inhibit-file-name-handlers
               (cons #'show-font-handler
                     (and (eq inhibit-file-name-operation operation)
