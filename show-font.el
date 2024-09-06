@@ -33,7 +33,6 @@
 ;;; Code:
 
 ;; TODO 2024-08-24: Offer option to install missing font.
-;; TODO 2024-08-27: Make this package work with other operating systems.
 
 (eval-when-compile (require 'cl-lib))
 
@@ -183,19 +182,31 @@ matched against the output of the `fc-scan' executable."
         (car (split-string output ","))
       output)))
 
-(defun show-font--get-installed-fonts (&optional attribute)
-  "Get list of font families available on the system.
-With optional ATTRIBUTE use it instead of \"family\"."
+(defun show-font--get-installed-font-families (&optional full)
+  "Return list of installed font families names.
+With optional FULL, return the full XLFD representation instead."
+  (mapcar
+   (lambda (font)
+     (if full
+         (aref font 6)
+       (format "%s" (aref font 0))))
+   (x-family-fonts)))
+
+(defun show-font-installed-p (family)
+  "Return non-nil if font family FAMILY is installed on the system.
+FAMILY is a string like those of `show-font--get-installed-font-families'."
+  (member family (show-font--get-installed-font-families)))
+
+(defun show-font--get-installed-font-files ()
+  "Get list of font files available on the system."
   (unless (executable-find "fc-list")
     (error "Cannot find `fc-list' executable; will not find installed fonts"))
-  (process-lines
-   "fc-list"
-   "-f"
-   (format "%%{%s}\n" (or attribute "file"))))
+  ;; TODO 2024-09-06: Make this work with other font backends.
+  (process-lines "fc-list" "-f" (format "%%{%s}\n" "file")))
 
-(defun show-font--installed-p (file)
-  "Return non-nil if font FILE is installed on the system."
-  (member file (show-font--get-installed-fonts)))
+(defun show-font-installed-file-p (file)
+  "Return non-nil if FILE is among `show-font--get-installed-font-files'."
+  (member file (show-font--get-installed-font-files)))
 
 ;; TODO 2024-09-06: Maybe we can rewrite `show-font--get-pangram' in some smart way to do this:
 ;;
