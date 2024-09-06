@@ -126,6 +126,9 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
   "Face for smaller font preview title."
   :group 'show-font-faces)
 
+(defface show-font-misc '((t :inherit shadow))
+  "Face for other, less important, elements in a preview.")
+
 ;;;; Helper functions
 
 (defconst show-font-latin-alphabet
@@ -290,6 +293,65 @@ buffer."
      (let ((inhibit-read-only t))
        (save-excursion
          (insert (show-font--prepare-text)))))))
+
+(defmacro show-font-with-preview-buffer (name &rest body)
+  "Evaluate BODY inside NAME buffer."
+  (declare (indent 1))
+  `(let ((buffer (get-buffer-create ,name)))
+     (with-current-buffer buffer
+       (let ((inhibit-read-only t))
+         (erase-buffer)
+         ,@body)
+       (show-font-mode))
+     (display-buffer buffer)))
+
+;;;; Preview an installed font
+
+(defvar show-font-select-preview-history nil)
+
+(defun show-font--select-preview-prompt ()
+  "Prompt for a font among `show-font--get-installed-font-families'."
+  (let ((def (car show-font-select-preview-history)))
+    (completing-read
+     (format-prompt "Select font to preview" def)
+     (show-font--get-installed-font-families))))
+
+;;;###autoload
+(defun show-font-select-preview (family)
+  "Prepare a preview for font FAMILY.
+When called interactively, prompt for FAMILY.  When called from Lisp,
+FAMILY is a string that satisfies `show-font-installed-p'."
+  (interactive
+   (list
+    (show-font--select-preview-prompt)))
+  (when (show-font-installed-p family)
+    (show-font-with-preview-buffer (format "*show-font preview of `%s'*" family)
+      (save-excursion
+        (insert (show-font--prepare-text family))))))
+
+;;;; Preview fonts in a list
+
+(defun show-font-list ()
+  "Produce a list of installed fonts with their preview.
+The preview text is that of `show-font-pangram'."
+  (declare (interactive-only t))
+  (interactive)
+  (show-font-with-preview-buffer "*show-font preview of all installed fonts*"
+    (save-excursion
+      (let* ((counter 0)
+             (counter-string (lambda () (concat (number-to-string counter)  ". "))))
+        (dolist (family (show-font--get-installed-font-families))
+           (insert (concat
+                    (propertize (funcall counter-string) 'face 'show-font-misc)
+                    (propertize family 'face (list 'show-font-title-small :family family))
+                    "\n"
+                    (make-string (length (funcall counter-string)) ?\s)
+                    (propertize (show-font--get-pangram) 'face (list 'show-font-regular :family family))))
+           (insert "\n\n")
+           (setq counter (+ counter 1)))))
+    (setq-local revert-buffer-function
+                (lambda (_ignore-auto _noconfirm)
+                  (show-font-list)))))
 
 ;;;; Major mode to preview the font of the current TTF or OTF file
 
