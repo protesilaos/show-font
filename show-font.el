@@ -264,12 +264,8 @@ FAMILY is a string like those of `show-font--get-installed-font-families'."
 
 (defun show-font-install (file)
   "Install font FILE locally.
-When called interactively, FILE is the variable `buffer-file-name'.
-Otherwise, FILE is a string.
-
 FILE must be of type TTF or OTF and must not already be installed (per
 `show-font-installed-file-p')."
-  (interactive (list buffer-file-name))
   (if (string-match-p "\\.\\(ttf\\|otf\\)\\'" file)
       (cond
        ((show-font-installed-file-p file)
