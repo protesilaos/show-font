@@ -49,7 +49,11 @@
   "Default list of pangrams.")
 
 (defcustom show-font-pangram 'prot
-  "Pangram to display previewed font in."
+  "Pangram to display previewed font in.
+This can be a symbol among the `car' of each element in
+`show-font-pangrams' or it can be a string.  The string does not
+actually need to be a pangram, though users can still have fun
+experimenting with `show-font-pangram-p'."
   :package-version '(show-font . "0.1.0")
   :type `(choice
           ,@(mapcar
