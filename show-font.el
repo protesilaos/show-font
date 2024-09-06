@@ -237,15 +237,18 @@ FAMILY is a string like those of `show-font--get-installed-font-families'."
    (t
     "No string or acceptable symbol value for `show-font-pangram', but this will do...")))
 
-(defun show-font--prepare-text ()
-  "Prepare pangram text at varying font heights."
+(defun show-font--prepare-text (&optional family)
+  "Prepare pangram text at varying font heights for the current font file.
+With optional FAMILY, prepare a preview for the given font family
+instead of that of the file."
   (let* ((pangram (show-font--get-pangram))
          (appeasement-message (concat "But here is a pangram to make you happy..." "\n\n" pangram)))
     (cond
      ((not (display-graphic-p))
       (concat (propertize "Fonts cannot be displayed in a terminal or TTY." 'face 'show-font-title)
               "\n\n" appeasement-message))
-     ((not (show-font--installed-p buffer-file-name))
+     ((and (not family)
+           (not (show-font-installed-file-p buffer-file-name)))
       (concat (propertize "Cannot preview this font" 'face 'show-font-title)
               "\n\n"
               (propertize buffer-file-name 'face 'bold)
@@ -255,8 +258,8 @@ FAMILY is a string like those of `show-font--get-installed-font-families'."
       (let ((faces '(show-font-small show-font-regular show-font-medium show-font-large))
             (list-of-lines nil)
             (list-of-blocks nil)
-            (name (show-font--get-attribute "fullname"))
-            (family (show-font--get-attribute "family")))
+            (name (or family (show-font--get-attribute "fullname")))
+            (family (or family (show-font--get-attribute "family"))))
         (dolist (face faces)
           (push (propertize pangram 'face (list face :family family)) list-of-lines)
           (push (propertize show-font-character-sample 'face (list face :family family)) list-of-blocks))
@@ -264,12 +267,15 @@ FAMILY is a string like those of `show-font--get-installed-font-families'."
          (propertize name 'face (list 'show-font-title :family family))
          "\n"
          (make-separator-line)
-         "\n"
-         (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family))
-         "\n"
-         (propertize family 'face (list 'show-font-subtitle :family family))
-         "\n"
-         (make-separator-line)
+         (if (not (equal name family))
+             (concat
+              "\n"
+              (propertize "Rendered with parent family:" 'face (list 'show-font-regular :family family))
+              "\n"
+              (propertize family 'face (list 'show-font-title-small :family family))
+              "\n"
+              (make-separator-line))
+           "")
          "\n"
          ;; Why not use `make-separator-line' here?
          (mapconcat #'identity (nreverse list-of-lines) "\n") "\n"
