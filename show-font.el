@@ -99,12 +99,25 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
   "Face for font preview at large height."
   :group 'show-font-faces)
 
-(defface show-font-title '((t :inherit error :height 2.2))
+(defconst show-font-title-common
+  '((((class color) (min-colors 88) (background dark))
+     :foreground "#fff29a")
+    (((class color) (min-colors 88) (background light))
+     :foreground "#873300")
+    (t
+     :inherit warning))
+  "Common face attributes for titles.")
+
+(defface show-font-title
+  `((default :height 2.6)
+    ,@show-font-title-common)
   "Face for font preview title."
   :group 'show-font-faces)
 
-(defface show-font-subtitle '((t :inherit bold :height 1.6))
-  "Face for font preview title."
+(defface show-font-title-small
+  `((default :height 2.0)
+    ,@show-font-title-common)
+  "Face for smaller font preview title."
   :group 'show-font-faces)
 
 ;;;###autoload
