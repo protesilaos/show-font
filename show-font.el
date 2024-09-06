@@ -425,9 +425,6 @@ The preview text is that of `show-font-pangram'."
   (display-line-numbers-mode -1)
   (visual-line-mode -1))
 
-;; FIXME 2024-08-25: Do we want to autoload this or does it belong
-;; somewhere else?  It seems wrong like this.
-
 ;;;###autoload
 (add-to-list 'file-name-handler-alist (cons "\\.\\(ttf\\|otf\\)\\'" #'show-font-handler))
 
