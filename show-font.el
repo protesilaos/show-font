@@ -41,6 +41,10 @@
   "Show font features in a buffer WORK-IN-PROGRESS."
   :group 'font)
 
+;; TODO 2024-09-06: How best to handle multiple languages?  Say there
+;; is a font that only works with Greek characters.  We need to know
+;; what characters the font supports.  Then we return the relevant
+;; pangram and sample text.
 (defconst show-font-pangrams
   '((fox . "The quick brown fox jumps over the lazy dog")
     (wizards . "Grumpy wizards make toxic brew for the evil queen and jack")
@@ -63,6 +67,7 @@ experimenting with `show-font-pangram-p'."
           (string :tag "A custom pangram"))
   :group 'show-font)
 
+;; See TODO above about multiple languages.
 (defcustom show-font-character-sample
   "
 ABCDEFGHIJKLMNOPQRSTUVWXYZ
