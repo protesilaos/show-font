@@ -26,16 +26,15 @@
 
 ;;; Commentary:
 ;;
-;; WORK-IN-PROGRESS.  Show font features in a buffer.  This depends on
-;; the font being available on the system.  Otherwise, the preview is
-;; inaccurate.
+;; Show font features in a buffer.  This depends on the font being
+;; available on the system.  Otherwise, the preview is inaccurate.
 
 ;;; Code:
 
 (eval-when-compile (require 'cl-lib))
 
 (defgroup show-font nil
-  "Show font features in a buffer WORK-IN-PROGRESS."
+  "Show font features in a buffer."
   :group 'font)
 
 ;; TODO 2024-09-06: How best to handle multiple languages?  Say there
@@ -84,7 +83,7 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
 ;;;; Faces
 
 (defgroup show-font-faces nil
-  "Show font features in a buffer WORK-IN-PROGRESS."
+  "Show font features in a buffer."
   :group 'show-font)
 
 (defface show-font-small '((t :height 0.8))
