@@ -122,9 +122,6 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
   "Face for smaller font preview title."
   :group 'show-font-faces)
 
-;;;###autoload
-(defconst show-font-extensions-regexp "\\.\\(ttf\\|otf\\)\\'"
-  "Regular expression to match font file extensions.")
 ;;;; Helper functions
 
 (defconst show-font-latin-alphabet
@@ -173,7 +170,7 @@ matched against the output of the `fc-scan' executable."
   (unless (executable-find "fc-scan")
     (error "Cannot find `fc-scan' executable; will not render font"))
   (when-let ((f (or file buffer-file-name))
-             (_ (string-match-p show-font-extensions-regexp f))
+             (_ (string-match-p "\\.\\(ttf\\|otf\\)\\'" f))
              (output (shell-command-to-string (format "fc-scan -f \"%%{%s}\" %s"
                                                       (shell-quote-argument attribute)
                                                       (shell-quote-argument f)))))
@@ -288,10 +285,10 @@ buffer."
 ;; somewhere else?  It seems wrong like this.
 
 ;;;###autoload
-(add-to-list 'file-name-handler-alist (cons show-font-extensions-regexp #'show-font-handler))
+(add-to-list 'file-name-handler-alist (cons "\\.\\(ttf\\|otf\\)\\'" #'show-font-handler))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist (cons show-font-extensions-regexp 'show-font-mode))
+(add-to-list 'auto-mode-alist (cons "\\.\\(ttf\\|otf\\)\\'" 'show-font-mode))
 
 (provide 'show-font)
 ;;; show-font.el ends here
