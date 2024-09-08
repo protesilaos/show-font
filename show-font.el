@@ -151,6 +151,7 @@ return nil."
       (message "Still missing: %s" (mapconcat #'identity missing-characters ", "))
       nil)))
 
+;;;###autoload
 (defun show-font-handler (operation &rest args)
   "Handle the given I/O `file-name-handler-alist' OPERATION with ARGS.
 Determine how to render the font file contents in a buffer."
