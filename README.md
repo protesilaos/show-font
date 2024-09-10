@@ -1,7 +1,5 @@
 # show-font for GNU Emacs
 
-DEMO HERE: <https://protesilaos.com/codelog/2024-08-24-emacs-show-font-prototype/>.
-
 This package lets you preview a font inside of Emacs. It does so in
 three ways:
 
@@ -16,4 +14,5 @@ three ways:
 + Official manual: <https://protesilaos.com/emacs/show-font>
 + Change log: <https://protesilaos.com/emacs/show-font-changelog>
 + Git repository: <https://github.com/protesilaos/show-font>
++ Sample pictures: <https://protesilaos.com/codelog/2024-09-10-emacs-show-font-0-1-0/>
 + Backronym: Show How Outlines Will Feature Only in Non-TTY.

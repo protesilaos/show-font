@@ -35,6 +35,7 @@ Current development target is {{{development-version}}}.
 + Official manual: <https://protesilaos.com/emacs/show-font>
 + Change log: <https://protesilaos.com/emacs/show-font-changelog>
 + Git repository: <https://github.com/protesilaos/show-font>
++ Sample pictures: <https://protesilaos.com/codelog/2024-09-10-emacs-show-font-0-1-0/>
 + Backronym: Show How Outlines Will Feature Only in Non-TTY.
 
 If you are viewing the README.org version of this file, please note that
