@@ -5,7 +5,7 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/show-font
-;; Version: 0.0.0
+;; Version: 0.1.0
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: convenience, writing, font
 

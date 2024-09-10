@@ -1,0 +1,64 @@
+#+title: Change log of show-font
+#+author: Protesilaos Stavrou
+#+email: info@protesilaos.com
+#+language: en
+#+options: ':t toc:nil author:t email:t num:t
+#+startup: content
+
+This document contains the release notes for each tagged commit on the
+project's main git repository: <https://github.com/protesilaos/show-font>.
+
+The newest release is at the top.  For further details, please consult
+the manual: <https://protesilaos.com/emacs/show-font>.
+
+#+toc: headlines 1 insert TOC here, with one headline level
+
+* Version 0.1.0 on 2024-09-10
+:PROPERTIES:
+:CUSTOM_ID: h:9fe44f53-9b84-49b9-bc35-780b25b72092
+:END:
+
+With ~show-font~ the user has the means to preview fonts inside of
+Emacs. This can be done in the following ways:
+
+- The command ~show-font-select-preview~ uses the minibuffer to
+  completion with completion for a font on the system. The selected
+  font is then displayed in a bespoke buffer.
+
+- The command ~show-font-list~ produces a list with all the fonts
+  available on the system each font on display is styled with its
+  given character set.
+
+- The ~show-font-mode~ is a major mode that gets activated when the
+  user visits a =.ttf= or =.otf= file. It will preview with the font,
+  if it is installed on the system, else it will provide a helpful
+  message and an option to install the font (NOTE 2024-09-10: this
+  only works on Linux).
+
+The previews include a pangram, which is controlled by the user option
+~show-font-pangram~. The default value is a playful take on the more
+familiar "the quick brown fox jumps over the lazy dog" phrase. Users
+can select among a few presets, or define their own custom string.
+
+The function ~show-font-pangram-p~ is available for those who wish to
+experiment with writing their own pangrams (it is not actually limited
+to the Latin alphabet).
+
+The user option ~show-font-character-sample~ provides a more complete
+character set that is intended for use in full buffer previews (i.e.
+not in the list of fonts). It can be set to any string. The default
+value is a set of alphanumeric characters that are commonly used in
+programming: a good monospaced font should render all of them
+unambiguously.
+
+Finally, the following faces control the appearance of various
+elements.
+
+- ~show-font-small~
+- ~show-font-regular~
+- ~show-font-medium~
+- ~show-font-large~
+- ~show-font-title~
+- ~show-font-title-small~
+- ~show-font-misc~
+- ~show-font-button~
