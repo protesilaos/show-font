@@ -27,7 +27,9 @@
 ;;; Commentary:
 ;;
 ;; Show font features in a buffer.  This depends on the font being
-;; available on the system.  Otherwise, the preview is inaccurate.
+;; available on the system.
+;;
+;; Consult the manual for further information.
 
 ;;; Code:
 
