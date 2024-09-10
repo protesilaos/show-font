@@ -37,7 +37,9 @@
 
 (defgroup show-font nil
   "Show font features in a buffer."
-  :group 'font)
+  :group 'font
+  :link '(info-link "(show-font) Top")
+  :link '(url-link :tag "Homepage" "https://protesilaos.com/emacs/show-font"))
 
 ;; TODO 2024-09-06: How best to handle multiple languages?  Say there
 ;; is a font that only works with Greek characters.  We need to know
@@ -86,7 +88,9 @@ x×X .,·°;:¡!¿?`'‘’   ÄAÃÀ TODO
 
 (defgroup show-font-faces nil
   "Show font features in a buffer."
-  :group 'show-font)
+  :group 'show-font
+  :link '(info-link "(show-font) Top")
+  :link '(url-link :tag "Homepage" "https://protesilaos.com/emacs/show-font"))
 
 (defface show-font-small '((t :height 0.8))
   "Face for font preview at small height."
