@@ -53,12 +53,12 @@ Emacs. This can be done in the following ways:
 
 #+findex: show-font-select-preview
 - The command ~show-font-select-preview~ uses the minibuffer to
-  completion with completion for a font on the system. The selected
+  prompt with completion for a font on the system. The selected
   font is then displayed in a bespoke buffer.
 
 #+findex: show-font-list
 - The command ~show-font-list~ produces a list with all the fonts
-  available on the system each font on display is styled with its
+  available on the system. Each font on display is styled with its
   given character set.
 
 #+findex: show-font-mode
