@@ -5,7 +5,7 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://github.com/protesilaos/show-font
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "28.1"))
 ;; Keywords: convenience, writing, font
 
@@ -196,12 +196,15 @@ matched against the output of the `fc-scan' executable."
 (defun show-font--get-installed-font-families (&optional full)
   "Return list of installed font families names.
 With optional FULL, return the full XLFD representation instead."
-  (mapcar
-   (lambda (font)
-     (if full
-         (aref font 6)
-       (format "%s" (aref font 0))))
-   (x-family-fonts)))
+  (sort
+   (delete-dups
+    (mapcar
+     (lambda (font)
+       (if full
+           (aref font 6)
+         (format "%s" (aref font 0))))
+     (x-family-fonts)))
+   #'string-lessp))
 
 (defun show-font-installed-p (family)
   "Return non-nil if font family FAMILY is installed on the system.
